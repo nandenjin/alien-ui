@@ -8,79 +8,86 @@
         | {{ Math.floor(value) || 0 }}
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+<script>
+export default {
+  props: {
+    value: { type: Number, required: true },
+    readonly: { type: Boolean, default: false },
+    max: { type: Number, default: 1 },
+    min: { type: Number, default: 0 }
+  },
 
-@Component({
+  data() {
+    return {
+      on: Boolean,
+      initX: Number,
+      initY: Number,
+      initValue: Number
+    }
+  },
+
+  computed: {
+    color() {
+      const v = this.value || 0
+      return `hsl(${(1 - v) * 300}, ${v === 0 ? '0%' : '100%'}, ${
+        v === 0 ? '20%' : '50%'
+      })`
+    },
+
+    v() {
+      return this.value // (this.value - this.min) / (this.max - this.min)
+    },
+
+    pathD() {
+      const v = this.v || 0
+      const x = Math.cos((v * 2 - 1.5) * Math.PI) * 45
+      const y = Math.sin((v * 2 - 1.5) * Math.PI) * 45
+      return `M0 45 A 45 45, 0, ${v > 0.5 ? 1 : 0}, 1, ${x} ${y}`
+    }
+  },
+
   mounted() {
     window.addEventListener('mousemove', e => this.onMouseMove(e))
     window.addEventListener('mouseup', () => this.onMouseUp())
   },
+
   destroyed() {
     window.removeEventListener('mousemove', e => this.onMouseMove(e))
     window.removeEventListener('mouseup', () => this.onMouseUp())
-  }
-})
-export default class CircularInput extends Vue {
-  @Prop() value!: number
-  @Prop() readonly = false
-  @Prop({ default: 0 }) max!: number
-  @Prop({ default: 1 }) min!: number
+  },
 
-  private on = false
-  private initX = 0
-  private initY = 0
-  private initValue = 0
+  methods: {
+    onMouseDown(e) {
+      if (this.readonly) return
+      this.on = true
+      this.initX = e.pageX
+      this.initY = e.pageY
+      this.initValue = this.v || 0
+    },
 
-  get color(): string {
-    const v = this.value || 0
-    return `hsl(${(1 - v) * 300}, ${v === 0 ? '0%' : '100%'}, ${
-      v === 0 ? '20%' : '50%'
-    })`
-  }
+    onMouseUp() {
+      this.on = false
+    },
 
-  private get v(): number {
-    return this.value // (this.value - this.min) / (this.max - this.min)
-  }
+    onMouseMove(e) {
+      if (this.on) {
+        const x = e.pageX
+        const y = e.pageY
 
-  private get pathD(): string {
-    const v = this.v || 0
-    const x = Math.cos((v * 2 - 1.5) * Math.PI) * 45
-    const y = Math.sin((v * 2 - 1.5) * Math.PI) * 45
-    return `M0 45 A 45 45, 0, ${v > 0.5 ? 1 : 0}, 1, ${x} ${y}`
-  }
-
-  private onMouseDown(e): void {
-    if (this.readonly) return
-    this.on = true
-    this.initX = e.pageX
-    this.initY = e.pageY
-    this.initValue = this.v || 0
-  }
-
-  private onMouseUp(): void {
-    this.on = false
-  }
-
-  private onMouseMove(e): void {
-    if (this.on) {
-      const x = e.pageX
-      const y = e.pageY
-
-      this.$emit(
-        'input',
-        Math.min(
-          Math.max(
-            Math.floor(this.v + (this.initY - y - (this.initX - x)) / 100),
-            0
-          ),
-          1
-        ) *
-          (this.max - this.min) +
-          this.min,
-        e
-      )
+        this.$emit(
+          'input',
+          Math.min(
+            Math.max(
+              Math.floor(this.v + (this.initY - y - (this.initX - x)) / 100),
+              0
+            ),
+            1
+          ) *
+            (this.max - this.min) +
+            this.min,
+          e
+        )
+      }
     }
   }
 }
