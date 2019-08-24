@@ -1,6 +1,6 @@
 {
   "name": "@nandenjin/alien-ui",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "UI Components Kit written with Vue.js",
   "main": "dist/alien-ui.umd.js",
   "module": "dist/alien-ui.esm.js",
