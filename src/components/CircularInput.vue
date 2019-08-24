@@ -26,21 +26,21 @@ export default class CircularInput extends Vue {
   value: number
 
   @Prop()
-  readonly: boolean = false
-  
-  private on: boolean = false
-  private initX: number = 0
-  private initY: number = 0
-  private initValue: number = 0
+  readonly = false
 
-  get color (): string {
+  private on = false
+  private initX = 0
+  private initY = 0
+  private initValue = 0
+
+  get color(): string {
     const v = this.value || 0
     return `hsl(${(1 - v / 255) * 300}, ${v === 0 ? '0%' : '100%'}, ${
       v === 0 ? '20%' : '50%'
     })`
   }
 
-  private get pathD (): string {
+  private get pathD(): string {
     const v = this.value / 255 || 0
     const x = Math.cos((v * 2 - 1.5) * Math.PI) * 45
     const y = Math.sin((v * 2 - 1.5) * Math.PI) * 45
@@ -68,7 +68,9 @@ export default class CircularInput extends Vue {
         'input',
         Math.min(
           Math.max(
-            Math.floor(this.initValue + (this.initY - y - (this.initX - x)) / 1),
+            Math.floor(
+              this.initValue + (this.initY - y - (this.initX - x)) / 1
+            ),
             0
           ),
           255
