@@ -1,0 +1,9 @@
+{
+  "name": "@nandenjin/alien-ui",
+  "version": "0.0.0",
+  "description": "UI Components Kit written with Vue.js",
+  "main": "index.js",
+  "repository": "https://github.com/nandenjin/alien-ui.git",
+  "author": "Kazumi Inada <hello@nandenjin.com>",
+  "license": "MIT"
+}
