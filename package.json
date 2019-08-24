@@ -2,21 +2,18 @@
   "name": "@nandenjin/alien-ui",
   "version": "0.1.0",
   "description": "UI Components Kit written with Vue.js",
-  "main": "dist/my-component.umd.js",
-  "module": "dist/my-component.esm.js",
-  "unpkg": "dist/my-component.min.js",
-  "browser": {
-    "./sfc": "src/my-component.vue"
-  },
+  "main": "dist/alien-ui.umd.js",
+  "module": "dist/alien-ui.esm.js",
+  "unpkg": "dist/alien-ui.min.js",
   "repository": "https://github.com/nandenjin/alien-ui.git",
   "author": "Kazumi Inada <hello@nandenjin.com>",
   "license": "MIT",
   "scripts": {
     "prepare": "run-s build",
     "build": "run-p build:*",
-    "build:umd": "rollup --config rollup.config.js --format umd --file dist/build.umd.js",
-    "build:es": "rollup --config rollup.config.js --format es --file dist/build.esm.js",
-    "build:unpkg": "rollup --config rollup.config.js --format iife --file dist/build.min.js",
+    "build:umd": "rollup --config rollup.config.js --format umd --file dist/alien-ui.umd.js",
+    "build:es": "rollup --config rollup.config.js --format es --file dist/alien-ui.esm.js",
+    "build:unpkg": "rollup --config rollup.config.js --format iife --file dist/alien-ui.min.js",
     "lint": "eslint src/**/*"
   },
   "devDependencies": {
