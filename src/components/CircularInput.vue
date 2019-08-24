@@ -2,9 +2,9 @@
   svg.circular-input(ref="container" @mousedown="onMouseDown" viewBox="-50, -50, 100, 100")
     g
       circle(class="circle" x="0" y="0" r="45" style="stroke: #222")
-      path.circular-input_circle(v-if="(value || 0) < 255" :d="pathD" :style="`stroke: ${color}`")
+      path.circular-input_circle(v-if="(v || 0) < 1" :d="pathD" :style="`stroke: ${color}`")
       circle.circular-input_circle(v-else :style="`stroke: ${color}`" x="0" y="0" r="45")
-      text.circular-input_value(:style="`fill: ${value > 0 ? '#fff' : '#666'}`" x="0" y="0")
+      text.circular-input_value(:style="`fill: ${v > 0 ? '#fff' : '#666'}`" x="0" y="0")
         | {{ Math.floor(value) || 0 }}
 </template>
 
@@ -22,11 +22,10 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
   }
 })
 export default class CircularInput extends Vue {
-  @Prop()
-  value: number
-
-  @Prop()
-  readonly = false
+  @Prop() value: number
+  @Prop() readonly = false
+  @Prop() max = 1
+  @Prop() min = 0
 
   private on = false
   private initX = 0
@@ -35,13 +34,17 @@ export default class CircularInput extends Vue {
 
   get color(): string {
     const v = this.value || 0
-    return `hsl(${(1 - v / 255) * 300}, ${v === 0 ? '0%' : '100%'}, ${
+    return `hsl(${(1 - v) * 300}, ${v === 0 ? '0%' : '100%'}, ${
       v === 0 ? '20%' : '50%'
     })`
   }
 
+  private get v(): number {
+    return (this.value - this.min) / (this.max - this.min)
+  }
+
   private get pathD(): string {
-    const v = this.value / 255 || 0
+    const v = this.v || 0
     const x = Math.cos((v * 2 - 1.5) * Math.PI) * 45
     const y = Math.sin((v * 2 - 1.5) * Math.PI) * 45
     return `M0 45 A 45 45, 0, ${v > 0.5 ? 1 : 0}, 1, ${x} ${y}`
@@ -73,8 +76,10 @@ export default class CircularInput extends Vue {
             ),
             0
           ),
-          255
-        ),
+          1
+        ) *
+          (this.max - this.min) +
+          this.min,
         e
       )
     }
