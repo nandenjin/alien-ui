@@ -1,7 +1,7 @@
 <template lang="pug">
   svg.circular-input(ref="container" @mousedown="onMouseDown" viewBox="-50, -50, 100, 100")
     g
-      circle(class="circle" x="0" y="0" r="45" style="stroke: #222")
+      circle.circular-input_circle(x="0" y="0" r="45" style="stroke: #222")
       path.circular-input_circle(v-if="(v || 0) < 1" :d="pathD" :style="`stroke: ${color}`")
       circle.circular-input_circle(v-else :style="`stroke: ${color}`" x="0" y="0" r="45")
       text.circular-input_value(:style="`fill: ${v > 0 ? '#fff' : '#666'}`" x="0" y="0")
