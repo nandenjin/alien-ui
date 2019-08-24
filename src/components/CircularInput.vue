@@ -1,64 +1,17 @@
-<template>
-  <svg
-    ref="container"
-    @mousedown="onMouseDown"
-    class="c-input"
-    viewBox="-50, -50, 100, 100"
-  >
-    <g>
-      <circle class="circle" x="0" y="0" r="45" style="stroke: #222" />
-      <path
-        v-if="(value || 0) < 255"
-        :d="pathD"
-        :style="`stroke: ${color}`"
-        class="circle"
-      />
-      <circle
-        v-else
-        :style="`stroke: ${color}`"
-        class="circle"
-        x="0"
-        y="0"
-        r="45"
-      />
-      <text
-        :style="`fill: ${value > 0 ? '#fff' : '#666'}`"
-        class="value"
-        x="0"
-        y="0"
-      >
-        {{ Math.floor(value) || 0 }}
-      </text>
-    </g>
-  </svg>
+<template lang="pug">
+  svg.circular-input(ref="container" @mousedown="onMouseDown" viewBox="-50, -50, 100, 100")
+    g
+      circle(class="circle" x="0" y="0" r="45" style="stroke: #222")
+      path.circular-input_circle(v-if="(value || 0) < 255" :d="pathD" :style="`stroke: ${color}`")
+      circle.circular-input_circle(v-else :style="`stroke: ${color}`" x="0" y="0" r="45")
+      text.circular-input_value(:style="`fill: ${value > 0 ? '#fff' : '#666'}`" x="0" y="0")
+        | {{ Math.floor(value) || 0 }}
 </template>
 
-<script>
-export default {
-  props: ['value', 'readonly'],
-  data() {
-    return {
-      on: false,
-      initX: 0,
-      initY: 0,
-      initV: 0
-    }
-  },
-  computed: {
-    color() {
-      const v = this.value || 0
-      return `hsl(${(1 - v / 255) * 300}, ${v === 0 ? '0%' : '100%'}, ${
-        v === 0 ? '20%' : '50%'
-      })`
-    },
+<script lang="ts">
+import { Vue, Component, Prop } from 'vue-property-decorator'
 
-    pathD() {
-      const v = this.value / 255 || 0
-      const x = Math.cos((v * 2 - 1.5) * Math.PI) * 45
-      const y = Math.sin((v * 2 - 1.5) * Math.PI) * 45
-      return `M0 45 A 45 45, 0, ${v > 0.5 ? 1 : 0}, 1, ${x} ${y}`
-    }
-  },
+@Component({
   mounted() {
     window.addEventListener('mousemove', e => this.onMouseMove(e))
     window.addEventListener('mouseup', () => this.onMouseUp())
@@ -66,53 +19,78 @@ export default {
   destroyed() {
     window.removeEventListener('mousemove', e => this.onMouseMove(e))
     window.removeEventListener('mouseup', () => this.onMouseUp())
-  },
-  methods: {
-    onMouseDown(e) {
-      if (this.readonly) return false
-      this.on = true
-      this.initX = e.pageX
-      this.initY = e.pageY
-      this.initV = this.value || 0
-    },
+  }
+})
+export default class CircularInput extends Vue {
+  @Prop()
+  value: number
 
-    onMouseUp() {
-      this.on = false
-    },
+  @Prop()
+  readonly: boolean = false
+  
+  private on: boolean = false
+  private initX: number = 0
+  private initY: number = 0
+  private initValue: number = 0
 
-    onMouseMove(e) {
-      if (this.on) {
-        const x = e.pageX
-        const y = e.pageY
+  get color (): string {
+    const v = this.value || 0
+    return `hsl(${(1 - v / 255) * 300}, ${v === 0 ? '0%' : '100%'}, ${
+      v === 0 ? '20%' : '50%'
+    })`
+  }
 
-        this.$emit(
-          'input',
-          Math.min(
-            Math.max(
-              Math.floor(this.initV + (this.initY - y - (this.initX - x)) / 1),
-              0
-            ),
-            255
+  private get pathD (): string {
+    const v = this.value / 255 || 0
+    const x = Math.cos((v * 2 - 1.5) * Math.PI) * 45
+    const y = Math.sin((v * 2 - 1.5) * Math.PI) * 45
+    return `M0 45 A 45 45, 0, ${v > 0.5 ? 1 : 0}, 1, ${x} ${y}`
+  }
+
+  private onMouseDown(e): void {
+    if (this.readonly) return
+    this.on = true
+    this.initX = e.pageX
+    this.initY = e.pageY
+    this.initValue = this.value || 0
+  }
+
+  private onMouseUp(): void {
+    this.on = false
+  }
+
+  private onMouseMove(e): void {
+    if (this.on) {
+      const x = e.pageX
+      const y = e.pageY
+
+      this.$emit(
+        'input',
+        Math.min(
+          Math.max(
+            Math.floor(this.initValue + (this.initY - y - (this.initX - x)) / 1),
+            0
           ),
-          e
-        )
-      }
+          255
+        ),
+        e
+      )
     }
   }
 }
 </script>
 
 <style lang="sass" scoped>
-.c-input
+.circular-input
   width: 40px
   height: 40px
   user-select: none
 
-  .circle
+  &_circle
     fill: none
     stroke-width: 10px
 
-  .value
+  &_value
     font-family: monospace
     font-size: 30px
     text-anchor: middle
