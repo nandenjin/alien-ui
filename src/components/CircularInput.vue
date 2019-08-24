@@ -9,7 +9,8 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 
 @Component({
   mounted() {
@@ -22,10 +23,10 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
   }
 })
 export default class CircularInput extends Vue {
-  @Prop() value: number
+  @Prop() value!: number
   @Prop() readonly = false
-  @Prop() max = 1
-  @Prop() min = 0
+  @Prop({ default: 0 }) max!: number
+  @Prop({ default: 1 }) min!: number
 
   private on = false
   private initX = 0
@@ -40,7 +41,7 @@ export default class CircularInput extends Vue {
   }
 
   private get v(): number {
-    return (this.value - this.min) / (this.max - this.min)
+    return this.value // (this.value - this.min) / (this.max - this.min)
   }
 
   private get pathD(): string {
@@ -55,7 +56,7 @@ export default class CircularInput extends Vue {
     this.on = true
     this.initX = e.pageX
     this.initY = e.pageY
-    this.initValue = this.value || 0
+    this.initValue = this.v || 0
   }
 
   private onMouseUp(): void {
@@ -71,9 +72,7 @@ export default class CircularInput extends Vue {
         'input',
         Math.min(
           Math.max(
-            Math.floor(
-              this.initValue + (this.initY - y - (this.initX - x)) / 1
-            ),
+            Math.floor(this.v + (this.initY - y - (this.initX - x)) / 100),
             0
           ),
           1

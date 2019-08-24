@@ -22,6 +22,8 @@ module.exports = {
     'prettier/vue'
   ],
   rules: {
+    '@typescript-eslint/no-inferrable-types': 'off',
+    '@typescript-eslint/no-empty-function': 'off',
     'prettier/prettier': [ 'error',
       {
         'semi': false,
