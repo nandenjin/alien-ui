@@ -19,23 +19,24 @@ export default {
 
   data() {
     return {
-      on: Boolean,
-      initX: Number,
-      initY: Number,
-      initValue: Number
+      on: false,
+      initX: 0,
+      initY: 0,
+      initValue: 0
     }
   },
 
   computed: {
     color() {
-      const v = this.value || 0
+      const v = this.v || 0
       return `hsl(${(1 - v) * 300}, ${v === 0 ? '0%' : '100%'}, ${
         v === 0 ? '20%' : '50%'
       })`
     },
 
+    // Normalized input value
     v() {
-      return this.value // (this.value - this.min) / (this.max - this.min)
+      return (this.value - this.min) / (this.max - this.min) || 0
     },
 
     pathD() {
@@ -74,19 +75,18 @@ export default {
         const x = e.pageX
         const y = e.pageY
 
-        this.$emit(
-          'input',
+        const value =
           Math.min(
             Math.max(
-              Math.floor(this.v + (this.initY - y - (this.initX - x)) / 100),
+              this.initValue + (this.initY - y - (this.initX - x)) / 200,
               0
             ),
             1
           ) *
             (this.max - this.min) +
-            this.min,
-          e
-        )
+          this.min
+
+        this.$emit('input', value, e)
       }
     }
   }
