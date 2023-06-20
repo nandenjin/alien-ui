@@ -6,15 +6,15 @@ export default {
   input: 'src/index.js',
   output: {
     name: 'alienUI',
-    exports: 'named'
+    exports: 'named',
   },
   plugins: [
     commonjs(),
     vue({
       css: true,
-      compileTemplate: true
+      compileTemplate: true,
     }),
-    buble()
+    buble(),
   ],
-  external: ['vue-property-decorator', 'vue']
+  external: ['vue-property-decorator', 'vue'],
 }
