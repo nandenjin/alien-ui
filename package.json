@@ -10,9 +10,9 @@
   "license": "MIT",
   "scripts": {
     "build": "run-p build:*",
-    "build:umd": "rollup --config rollup.config.js --format umd --file dist/alien-ui.umd.js",
-    "build:es": "rollup --config rollup.config.js --format es --file dist/alien-ui.esm.js",
-    "build:unpkg": "rollup --config rollup.config.js --format iife --file dist/alien-ui.min.js",
+    "build:umd": "rollup --config rollup.config.mjs --format umd --file dist/alien-ui.umd.js",
+    "build:es": "rollup --config rollup.config.mjs --format es --file dist/alien-ui.esm.js",
+    "build:unpkg": "rollup --config rollup.config.mjs --format iife --file dist/alien-ui.min.js",
     "lint": "eslint src/**/*"
   },
   "devDependencies": {
