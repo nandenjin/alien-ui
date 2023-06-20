@@ -28,7 +28,7 @@
     "rollup-plugin-commonjs": "^10.0.2",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "rollup-plugin-vue": "^5.0.1",
-    "vue-property-decorator": "^8.2.1",
+    "vue-property-decorator": "^9.0.0",
     "vue-template-compiler": "^2.6.10"
   }
 }
