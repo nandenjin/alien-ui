@@ -14,7 +14,7 @@
     "build:es": "rollup --config rollup.config.mjs --format es --file dist/alien-ui.esm.js",
     "build:unpkg": "rollup --config rollup.config.mjs --format iife --file dist/alien-ui.min.js",
     "lint": "eslint src/**/*",
-    "format": "prettier --write \"**/*.{js,ts,tsx,jsx,json,md,yml,yaml}\""
+    "format": "prettier --write \"**/*.{js,mjs,ts,tsx,jsx,json,md,yml,yaml}\""
   },
   "devDependencies": {
     "@prettier/plugin-pug": "^2.0.0",
